@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find your next book | Book Recommender</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #10131b;
+            color: #f4f5f7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at top left, rgba(48, 113, 93, .2), transparent 42%),
+                #10131b;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site-header {
+            border-bottom: 1px solid #282d38;
+            background: rgba(16, 19, 27, .88);
+        }
+
+        .nav {
+            width: min(1120px, calc(100% - 40px));
+            min-height: 68px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: .01em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            color: #b7bfcc;
+            font-size: .95rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: #8de0b5;
+        }
+
+        main {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 64px 0 80px;
+        }
+
+        .intro {
+            max-width: 700px;
+            margin-bottom: 32px;
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: #8de0b5;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.1rem, 5vw, 3.5rem);
+            line-height: 1.08;
+        }
+
+        .intro-copy {
+            max-width: 580px;
+            margin: 16px 0 0;
+            color: #aab2bf;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .search-panel {
+            max-width: 760px;
+            padding: 22px;
+            border: 1px solid #303744;
+            border-radius: 16px;
+            background: #191e28;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
+        }
+
+        .search-panel label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: .95rem;
+            font-weight: 600;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="search"] {
+            flex: 1;
+            min-width: 0;
+            padding: 13px 15px;
+            border: 1px solid #414a59;
+            border-radius: 9px;
+            outline: none;
+            background: #11151d;
+            color: #f4f5f7;
+            font: inherit;
+        }
+
+        input[type="search"]:focus {
+            border-color: #69c894;
+            box-shadow: 0 0 0 3px rgba(105, 200, 148, .18);
+        }
+
+        button {
+            padding: 0 20px;
+            border: 0;
+            border-radius: 9px;
+            background: #4fc483;
+            color: #102017;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+        }
+
+        button:hover {
+            background: #70d99d;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #a6f2c5;
+            outline-offset: 3px;
+        }
+
+        .hint {
+            margin: 10px 0 0;
+            color: #929cab;
+            font-size: .88rem;
+        }
+
+        .notice {
+            max-width: 760px;
+            margin-top: 20px;
+            padding: 14px 16px;
+            border: 1px solid #725f31;
+            border-radius: 10px;
+            background: #2a2519;
+            color: #f3d993;
+            line-height: 1.5;
+        }
+
+        .results {
+            margin-top: 52px;
+        }
+
+        .results-heading {
+            margin-bottom: 22px;
+        }
+
+        .results-heading h2 {
+            margin: 0;
+            font-size: 1.7rem;
+        }
+
+        .results-heading p {
+            margin: 8px 0 0;
+            color: #aab2bf;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+        }
+
+        .book-card {
+            overflow: hidden;
+            border: 1px solid #303744;
+            border-radius: 13px;
+            background: #191e28;
+            transition: transform .18s ease, border-color .18s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+            border-color: #4fc483;
+        }
+
+        .cover-wrap {
+            display: grid;
+            height: 245px;
+            place-items: center;
+            overflow: hidden;
+            background: #222936;
+        }
+
+        .cover-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cover-placeholder {
+            color: #929cab;
+            font-size: .9rem;
+        }
+
+        .book-info {
+            padding: 15px;
+        }
+
+        .book-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .book-info p {
+            margin: 8px 0 0;
+            color: #aab2bf;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 560px) {
+            .nav,
+            main {
+                width: min(100% - 28px, 1120px);
+            }
+
+            main {
+                padding-top: 42px;
+            }
+
+            .search-panel {
+                padding: 17px;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            button {
+                min-height: 46px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav" aria-label="Main navigation">
+            <a class="brand" href="/">My Book Recommender</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/recommend" aria-current="page">Recommend</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro">
+            <p class="eyebrow">Personalized picks</p>
+            <h1>Find your next favorite book.</h1>
+            <p class="intro-copy">Enter a book you enjoy and discover titles readers with similar tastes loved.</p>
+        </section>
+
+        <form class="search-panel" action="/recommend_books" method="post">
+            <label for="user_input">Which book did you enjoy?</label>
+            <div class="search-row">
+                <input
+                    id="user_input"
+                    name="user_input"
+                    type="search"
+                    list="book-title-suggestions"
+                    placeholder="Start typing a book title..."
+                    value="{{ user_input|default('', true) }}"
+                    autocomplete="off"
+                    required
+                >
+                <datalist id="book-title-suggestions">
+                    {% for title in book_titles|default([], true) %}
+                        <option value="{{ title }}">
+                    {% endfor %}
+                </datalist>
+                <button type="submit">Find recommendations</button>
+            </div>
+            <p class="hint">Search is not case-sensitive. Choose a suggested title for the best match.</p>
+        </form>
+
+        {% if error %}
+            <div class="notice" role="alert">{{ error }}</div>
+        {% endif %}
+
+        {% if data %}
+            <section class="results" aria-labelledby="results-title">
+                <div class="results-heading">
+                    <h2 id="results-title">Books you might like</h2>
+                    <p>Inspired by <strong>{{ searched_title }}</strong></p>
+                </div>
+                <div class="book-grid">
+                    {% for book in data %}
+                        <article class="book-card">
+                            <div class="cover-wrap">
+                                {% if book[2] %}
+                                    <img src="{{ book[2] }}" alt="Cover of {{ book[0] }}" loading="lazy">
+                                {% else %}
+                                    <span class="cover-placeholder">Cover unavailable</span>
+                                {% endif %}
+                            </div>
+                            <div class="book-info">
+                                <h3>{{ book[0] }}</h3>
+                                <p>by {{ book[1] }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
